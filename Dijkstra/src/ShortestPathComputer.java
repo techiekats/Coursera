@@ -5,11 +5,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 
 
 public class ShortestPathComputer {
 
-	private final int INFINITY=1000000;
+	private static final int INFINITY=1000000;
+	private static final String SOURCE="1";		
 	private static HashMap<String, ArrayList<Tuple<String, Integer>>> graph;
 
 	public static void main(String[] args) {
@@ -48,6 +50,18 @@ public class ShortestPathComputer {
 
 	private static int ComputeDijkstraShortestPath ()
 	{
+		//construct initial set and compute distances
+		HashMap<String, Integer> computedDistances = new HashMap<String,Integer>();
+		for (Iterator<String> k = graph.keySet().iterator(); k.hasNext();)
+		{
+			computedDistances.put(k.next(), INFINITY);
+		}
+		computedDistances.put(SOURCE, 0);
+		for  (Iterator <Tuple<String,Integer>> distanceFromSource = graph.get(SOURCE).iterator(); distanceFromSource.hasNext();)
+		{
+			Tuple<String, Integer> t = distanceFromSource.next();
+			computedDistances.put(t.x, t.y);
+		}
 		return 0;
 	}
 }
