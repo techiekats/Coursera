@@ -6,19 +6,29 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 
 public class ShortestPathComputer {
 
 	private static final int INFINITY=1000000;
-	private static final String SOURCE="1";		
+	private static final String SOURCE="s";		
 	private static HashMap<String, ArrayList<Tuple<String, Integer>>> graph;
-
+	private static HashMap<String, Integer> computedDistances;
 	public static void main(String[] args) {
 		graph = new HashMap<String, ArrayList<Tuple<String, Integer>>>();
-		LoadGraphFromFile();
-		int shortestPath = ComputeDijkstraShortestPath();
+		//LoadGraphFromFile();
+		LoadGraphFromTest();
+		ComputeDijkstraShortestPath();
 
+		Iterator<Entry<String, Integer>> it = computedDistances.entrySet().iterator();
+		while (it.hasNext())
+		{
+			Entry<String, Integer> entry = it.next();
+			System.out.println("Node:" + entry.getKey() + "\tDistance:" + computedDistances.get(entry.getKey()) + "\n");
+		}
 	}
 	private static void LoadGraphFromFile()
 	{
@@ -48,20 +58,103 @@ public class ShortestPathComputer {
 		
 	}
 
-	private static int ComputeDijkstraShortestPath ()
+	private static void LoadGraphFromTest()
 	{
+		graph = new HashMap<String, ArrayList<Tuple<String, Integer>>>();
+		
+		//node s
+		ArrayList<Tuple<String,Integer>> sList = new ArrayList<Tuple<String,Integer>>();
+		sList.add(new Tuple<String,Integer>("t", 1));
+		sList.add(new Tuple<String,Integer>("u", 2));
+		graph.put("s", sList);
+
+		//node t
+		ArrayList<Tuple<String,Integer>> tList = new ArrayList<Tuple<String,Integer>>();
+		tList.add(new Tuple<String,Integer>("v", 4));
+		graph.put("t", tList);
+		
+		//node u
+		ArrayList<Tuple<String,Integer>> uList = new ArrayList<Tuple<String,Integer>>();
+		uList.add(new Tuple<String,Integer>("v",2));
+		uList.add(new Tuple<String,Integer>("w", 3));
+		graph.put("u", uList);
+		
+		//node v
+		ArrayList<Tuple<String,Integer>> vList = new ArrayList<Tuple<String,Integer>>();
+		vList.add(new Tuple<String,Integer>("x",3));
+		graph.put("v", vList);
+	
+		//node w
+		ArrayList<Tuple<String,Integer>> wList = new ArrayList<Tuple<String,Integer>>();
+		wList.add(new Tuple<String,Integer>("x",1));
+		graph.put("w", wList);
+		
+		//node x
+		graph.put("x", null);
+	}
+	
+	private static void ComputeDijkstraShortestPath ()
+	{
+		String nextVertex = SOURCE;
+		HashMap<String, Tuple<Boolean,Boolean>> computationStatus = new HashMap<String, Tuple<Boolean, Boolean>>();
+		//Hashmap<String, <isProcessed, isReachable>>
+
 		//construct initial set and compute distances
-		HashMap<String, Integer> computedDistances = new HashMap<String,Integer>();
+		computedDistances = new HashMap<String,Integer>();
+	
 		for (Iterator<String> k = graph.keySet().iterator(); k.hasNext();)
 		{
-			computedDistances.put(k.next(), INFINITY);
+			String key = k.next();
+			computedDistances.put(key, INFINITY);
+			computationStatus.put(key, new Tuple<Boolean, Boolean>(false, false));
 		}
 		computedDistances.put(SOURCE, 0);
-		for  (Iterator <Tuple<String,Integer>> distanceFromSource = graph.get(SOURCE).iterator(); distanceFromSource.hasNext();)
+	
+		while (graph.size() != 0)
 		{
-			Tuple<String, Integer> t = distanceFromSource.next();
-			computedDistances.put(t.x, t.y);
+			String temp = nextVertex;
+			Integer distanceOfCurrentVertex = computedDistances.get(nextVertex); 
+			Integer minimum = INFINITY;
+			//update the graph with new calculations
+			if (null != graph.get(nextVertex))
+			{
+				computationStatus.put(nextVertex, new Tuple<Boolean, Boolean>(true, true));
+				for  (Iterator <Tuple<String,Integer>> distanceFromSource = graph.get(nextVertex).iterator(); distanceFromSource.hasNext();)
+				{
+					
+					Tuple<String, Integer> t = distanceFromSource.next();
+					computationStatus.put(t.x, new Tuple<Boolean, Boolean>(computationStatus.get(t.x).x, true));
+
+					if (t.y + distanceOfCurrentVertex < computedDistances.get(t.x))
+					{
+						computedDistances.put(t.x, t.y+ distanceOfCurrentVertex);
+					}
+					if (computedDistances.get(t.x) < minimum)
+					{
+						nextVertex = t.x;	
+						minimum = computedDistances.get(t.x);
+					}
+				}
+			}	
+			else
+			{
+				Iterator<Entry<String, Tuple<Boolean, Boolean>>> it = computationStatus.entrySet().iterator();
+				while (it.hasNext())
+				{
+					Entry<String, Tuple<Boolean, Boolean>>  entry = it.next();
+					if (!entry.getValue().x)
+					{
+						if (entry.getValue().y)
+						{
+							nextVertex = entry.getKey();
+							break;
+						}
+					}
+				}
+			}
+				
+			//remove the vertex from source
+			graph.remove(temp);
 		}
-		return 0;
 	}
 }
