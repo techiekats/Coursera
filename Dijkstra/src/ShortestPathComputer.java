@@ -14,13 +14,14 @@ import java.util.function.Consumer;
 public class ShortestPathComputer {
 
 	private static final int INFINITY=1000000;
-	private static final String SOURCE="s";		
+	private static final String SOURCE="0";		
 	private static HashMap<String, ArrayList<Tuple<String, Integer>>> graph;
 	private static HashMap<String, Integer> computedDistances;
 	public static void main(String[] args) {
 		graph = new HashMap<String, ArrayList<Tuple<String, Integer>>>();
 		//LoadGraphFromFile();
-		LoadGraphFromTest();
+		//LoadGraphFromTest();
+		LoadGraphFromTestData2();
 		ComputeDijkstraShortestPath();
 
 		Iterator<Entry<String, Integer>> it = computedDistances.entrySet().iterator();
@@ -29,6 +30,11 @@ public class ShortestPathComputer {
 			Entry<String, Integer> entry = it.next();
 			System.out.println("Node:" + entry.getKey() + "\tDistance:" + computedDistances.get(entry.getKey()) + "\n");
 		}
+		
+		//FOR COURSERA
+		// 7,37,59,82,99,115,133,165,188,197.
+		/*System.out.printf("%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",computedDistances.get("7"), computedDistances.get("37"),computedDistances.get("59"),computedDistances.get("82"),computedDistances.get("99"),
+							computedDistances.get("115"), computedDistances.get("133"),computedDistances.get("165"), computedDistances.get("188"), computedDistances.get("197"));*/
 	}
 	private static void LoadGraphFromFile()
 	{
@@ -66,7 +72,7 @@ public class ShortestPathComputer {
 		ArrayList<Tuple<String,Integer>> sList = new ArrayList<Tuple<String,Integer>>();
 		sList.add(new Tuple<String,Integer>("t", 1));
 		sList.add(new Tuple<String,Integer>("u", 2));
-		graph.put("s", sList);
+		graph.put("1", sList);
 
 		//node t
 		ArrayList<Tuple<String,Integer>> tList = new ArrayList<Tuple<String,Integer>>();
@@ -92,6 +98,75 @@ public class ShortestPathComputer {
 		//node x
 		graph.put("x", null);
 	}
+	
+
+	/*EXPECTED OUTPUT:
+	 * Vertex   Distance from Source
+		0                0
+		1                4
+		2                12
+		3                19
+		4                21
+		5                11
+		6                9
+		7                8
+		8                14
+	 * */
+	private static void LoadGraphFromTestData2()
+	{
+		graph = new HashMap<String, ArrayList<Tuple<String, Integer>>>();
+		
+		//node 0
+		ArrayList<Tuple<String,Integer>> list0 = new ArrayList<Tuple<String,Integer>>();
+		list0.add(new Tuple<String,Integer>("1", 4));
+		list0.add(new Tuple<String,Integer>("7", 8));
+		graph.put("0", list0);
+
+		//node 1
+		ArrayList<Tuple<String,Integer>> list1 = new ArrayList<Tuple<String,Integer>>();
+		list1.add(new Tuple<String,Integer>("2", 8));
+		list1.add(new Tuple<String,Integer>("7", 11));
+		graph.put("1", list1);
+
+		//node 2
+		ArrayList<Tuple<String,Integer>> list2 = new ArrayList<Tuple<String,Integer>>();
+		list2.add(new Tuple<String,Integer>("3", 7));
+		list2.add(new Tuple<String,Integer>("5", 4));
+		list2.add(new Tuple<String,Integer>("8", 2));
+		graph.put("2", list2);
+		
+		//node 3
+		ArrayList<Tuple<String,Integer>> list3 = new ArrayList<Tuple<String,Integer>>();
+		list3.add(new Tuple<String,Integer>("4", 9));
+		list3.add(new Tuple<String,Integer>("5", 14));
+		graph.put("3", list3);
+		
+		//node 4
+		ArrayList<Tuple<String,Integer>> list4 = new ArrayList<Tuple<String,Integer>>();
+		list4.add(new Tuple<String,Integer>("5", 10));
+		graph.put("4", list4);	
+		
+		//node 5
+		ArrayList<Tuple<String,Integer>> list5 = new ArrayList<Tuple<String,Integer>>();
+		list5.add(new Tuple<String,Integer>("6", 2));
+		graph.put("5", list5);	
+		
+		//node 6
+		ArrayList<Tuple<String,Integer>> list6 = new ArrayList<Tuple<String,Integer>>();
+		list6.add(new Tuple<String,Integer>("7", 1));
+		list6.add(new Tuple<String,Integer>("8", 6));
+		graph.put("6", list6);	
+		
+		//node 7
+		ArrayList<Tuple<String,Integer>> list7 = new ArrayList<Tuple<String,Integer>>();
+		list7.add(new Tuple<String,Integer>("8", 7));
+		graph.put("7", list7);	
+		
+		//node 8
+		graph.put("8", null);	
+
+	}
+
 	
 	private static void ComputeDijkstraShortestPath ()
 	{
@@ -121,7 +196,6 @@ public class ShortestPathComputer {
 				computationStatus.put(nextVertex, new Tuple<Boolean, Boolean>(true, true));
 				for  (Iterator <Tuple<String,Integer>> distanceFromSource = graph.get(nextVertex).iterator(); distanceFromSource.hasNext();)
 				{
-					
 					Tuple<String, Integer> t = distanceFromSource.next();
 					computationStatus.put(t.x, new Tuple<Boolean, Boolean>(computationStatus.get(t.x).x, true));
 
@@ -152,7 +226,6 @@ public class ShortestPathComputer {
 					}
 				}
 			}
-				
 			//remove the vertex from source
 			graph.remove(temp);
 		}
