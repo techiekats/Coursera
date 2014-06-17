@@ -126,6 +126,8 @@ public class ShortestPathComputer {
 		ArrayList<Tuple<String,Integer>> list1 = new ArrayList<Tuple<String,Integer>>();
 		list1.add(new Tuple<String,Integer>("2", 8));
 		list1.add(new Tuple<String,Integer>("7", 11));
+		list1.add(new Tuple<String,Integer>("0", 4));
+
 		graph.put("1", list1);
 
 		//node 2
@@ -133,38 +135,59 @@ public class ShortestPathComputer {
 		list2.add(new Tuple<String,Integer>("3", 7));
 		list2.add(new Tuple<String,Integer>("5", 4));
 		list2.add(new Tuple<String,Integer>("8", 2));
+		list2.add(new Tuple<String,Integer>("1", 8));
+
 		graph.put("2", list2);
 		
 		//node 3
 		ArrayList<Tuple<String,Integer>> list3 = new ArrayList<Tuple<String,Integer>>();
 		list3.add(new Tuple<String,Integer>("4", 9));
 		list3.add(new Tuple<String,Integer>("5", 14));
+		list3.add(new Tuple<String,Integer>("2", 7));
+
 		graph.put("3", list3);
 		
 		//node 4
 		ArrayList<Tuple<String,Integer>> list4 = new ArrayList<Tuple<String,Integer>>();
 		list4.add(new Tuple<String,Integer>("5", 10));
+		list4.add(new Tuple<String,Integer>("3", 9));
+
 		graph.put("4", list4);	
 		
 		//node 5
 		ArrayList<Tuple<String,Integer>> list5 = new ArrayList<Tuple<String,Integer>>();
 		list5.add(new Tuple<String,Integer>("6", 2));
+		list5.add(new Tuple<String,Integer>("2", 4));
+		list5.add(new Tuple<String,Integer>("3", 14));
+		list5.add(new Tuple<String,Integer>("4", 10));
+
+
 		graph.put("5", list5);	
 		
 		//node 6
 		ArrayList<Tuple<String,Integer>> list6 = new ArrayList<Tuple<String,Integer>>();
 		list6.add(new Tuple<String,Integer>("7", 1));
 		list6.add(new Tuple<String,Integer>("8", 6));
+		list6.add(new Tuple<String,Integer>("5", 2));
+
 		graph.put("6", list6);	
 		
 		//node 7
 		ArrayList<Tuple<String,Integer>> list7 = new ArrayList<Tuple<String,Integer>>();
 		list7.add(new Tuple<String,Integer>("8", 7));
+		list7.add(new Tuple<String,Integer>("0", 8));
+		list7.add(new Tuple<String,Integer>("1", 11));
+		list7.add(new Tuple<String,Integer>("6", 1));
+
 		graph.put("7", list7);	
 		
 		//node 8
-		graph.put("8", null);	
+		ArrayList<Tuple<String,Integer>> list8 = new ArrayList<Tuple<String,Integer>>();
+		list8.add(new Tuple<String,Integer>("2", 2));
+		list8.add(new Tuple<String,Integer>("7", 6));
+		list8.add(new Tuple<String,Integer>("6", 6));
 
+		graph.put("8", list8);
 	}
 
 	
@@ -213,19 +236,26 @@ public class ShortestPathComputer {
 			else
 			{
 				Iterator<Entry<String, Tuple<Boolean, Boolean>>> it = computationStatus.entrySet().iterator();
+				minimum = INFINITY;
 				while (it.hasNext())
 				{
 					Entry<String, Tuple<Boolean, Boolean>>  entry = it.next();
-					if (!entry.getValue().x)
+					if (!entry.getValue().x && entry.getValue().y && computedDistances.get(entry.getKey()) < minimum)
 					{
-						if (entry.getValue().y)
-						{
 							nextVertex = entry.getKey();
-							break;
-						}
+							minimum = computedDistances.get(entry.getKey());
 					}
 				}
 			}
+			System.out.println("Node:"+ temp);
+			Iterator<Entry<String, Integer>> it = computedDistances.entrySet().iterator();
+			while (it.hasNext())
+			{
+				Entry<String, Integer> entry = it.next();
+				System.out.println("Node:" + entry.getKey() + "\tDistance:" + computedDistances.get(entry.getKey()) + "\n");
+			}
+			System.out.println("----------------------------------------------");
+
 			//remove the vertex from source
 			graph.remove(temp);
 		}
