@@ -14,14 +14,14 @@ import java.util.function.Consumer;
 public class ShortestPathComputer {
 
 	private static final int INFINITY=1000000;
-	private static final String SOURCE="0";		
+	private static final String SOURCE="1";		
 	private static HashMap<String, ArrayList<Tuple<String, Integer>>> graph;
 	private static HashMap<String, Integer> computedDistances;
 	public static void main(String[] args) {
 		graph = new HashMap<String, ArrayList<Tuple<String, Integer>>>();
-		//LoadGraphFromFile();
+		LoadGraphFromFile();
 		//LoadGraphFromTest();
-		LoadGraphFromTestData2();
+		//LoadGraphFromTestData2();
 		ComputeDijkstraShortestPath();
 
 		Iterator<Entry<String, Integer>> it = computedDistances.entrySet().iterator();
@@ -33,8 +33,8 @@ public class ShortestPathComputer {
 		
 		//FOR COURSERA
 		// 7,37,59,82,99,115,133,165,188,197.
-		/*System.out.printf("%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",computedDistances.get("7"), computedDistances.get("37"),computedDistances.get("59"),computedDistances.get("82"),computedDistances.get("99"),
-							computedDistances.get("115"), computedDistances.get("133"),computedDistances.get("165"), computedDistances.get("188"), computedDistances.get("197"));*/
+		System.out.printf("%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",computedDistances.get("7"), computedDistances.get("37"),computedDistances.get("59"),computedDistances.get("82"),computedDistances.get("99"),
+							computedDistances.get("115"), computedDistances.get("133"),computedDistances.get("165"), computedDistances.get("188"), computedDistances.get("197"));
 	}
 	private static void LoadGraphFromFile()
 	{
@@ -247,14 +247,16 @@ public class ShortestPathComputer {
 					}
 				}
 			}
-			System.out.println("Node:"+ temp);
+			
+			/*PRINT TEST OUTPUT
+			 * System.out.println("Node:"+ temp);
 			Iterator<Entry<String, Integer>> it = computedDistances.entrySet().iterator();
 			while (it.hasNext())
 			{
 				Entry<String, Integer> entry = it.next();
 				System.out.println("Node:" + entry.getKey() + "\tDistance:" + computedDistances.get(entry.getKey()) + "\n");
 			}
-			System.out.println("----------------------------------------------");
+			System.out.println("----------------------------------------------");*/
 
 			//remove the vertex from source
 			graph.remove(temp);
