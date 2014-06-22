@@ -1,5 +1,5 @@
 public class Tuple<X, Y> { 
-  public final X x; 
+  public X x; 
   public Y y; 
 
   public Tuple(X x, Y y) { 
