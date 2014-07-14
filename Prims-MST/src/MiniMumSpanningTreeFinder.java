@@ -30,10 +30,6 @@ public class MiniMumSpanningTreeFinder
 		FindMST();
 
 		System.out.printf("MST cost=" + mstCost);
-		//FOR COURSERA
-		// 7,37,59,82,99,115,133,165,188,197.
-		//System.out.printf("%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",computedDistances.get("7"), computedDistances.get("37"),computedDistances.get("59"),computedDistances.get("82"),computedDistances.get("99"),
-		//					computedDistances.get("115"), computedDistances.get("133"),computedDistances.get("165"), computedDistances.get("188"), computedDistances.get("197"));
 	}
 	private static void LoadGraphFromFile()
 	{
@@ -46,13 +42,14 @@ public class MiniMumSpanningTreeFinder
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			graph = new HashMap<String, ArrayList<Tuple<String, Integer>>>();
-			graphKey = Integer.parseInt(fileLines[0].toString().split(" ")[0]);
+			//graph = new HashMap<String, ArrayList<Tuple<String, Integer>>>();
+			//graphKey = Integer.parseInt(fileLines[0].toString().split(" ")[0]);
+			graphKey = Integer.MIN_VALUE;
 			for (int i = 1; i < fileLines.length; i++)
 			{
 				ArrayList <String> edge = new ArrayList<String>(Arrays.asList(fileLines[i].toString().split(" ")));
-				String head = edge.get(0);
-				String tail = edge.get(1);
+				String head = edge.get(0).trim();
+				String tail = edge.get(1).trim();
 				Integer weight = Integer.parseInt(edge.get(2));
 				ArrayList<Tuple<String,Integer>> a1 = (null == graph.get(head)) ? new ArrayList<Tuple<String,Integer>>() : graph.get(head);
 				ArrayList<Tuple<String,Integer>> a2 = (null == graph.get(tail)) ? new ArrayList<Tuple<String,Integer>>() : graph.get(tail);
@@ -63,6 +60,17 @@ public class MiniMumSpanningTreeFinder
 				graph.put(tail, a2);
 			}	
 		SOURCE = fileLines[1].toString().split(" ")[0];
+		Consumer<Entry<String, ArrayList<Tuple<String, Integer>>>> action = new Consumer<Entry<String, ArrayList<Tuple<String, Integer>>>> (){
+
+			public void accept(
+					Entry<String, ArrayList<Tuple<String, Integer>>> t) {
+					for (Tuple<String, Integer> edge: t.getValue())
+					{
+						System.out.printf("\n%s\t%s\t%d", t.getKey(), edge.x, edge.y);
+					}
+					System.out.print("\n---------------------\n");
+			}};
+		graph.entrySet().forEach(action );
 	}
 
 	private static void LoadGraphFromTest()
@@ -109,21 +117,10 @@ public class MiniMumSpanningTreeFinder
 		graph.put("x", xList);
 	}
 	
-
-	/*EXPECTED OUTPUT:
-	 * Vertex   Distance from Source
-		0                0
-		1                4
-		2                12
-		3                19
-		4                21
-		5                11
-		6                9
-		7                8
-		8                14
-	 * */
 	private static void LoadGraphFromTestData2()
 	{
+		//MST cost=37
+		SOURCE = "0";
 		graph = new HashMap<String, ArrayList<Tuple<String, Integer>>>();
 		
 		//node 0
@@ -134,9 +131,9 @@ public class MiniMumSpanningTreeFinder
 
 		//node 1
 		ArrayList<Tuple<String,Integer>> list1 = new ArrayList<Tuple<String,Integer>>();
-		list1.add(new Tuple<String,Integer>("2", 8));
-		list1.add(new Tuple<String,Integer>("7", 11));
 		list1.add(new Tuple<String,Integer>("0", 4));
+		list1.add(new Tuple<String,Integer>("7", 11));
+		list1.add(new Tuple<String,Integer>("2", 8));
 
 		graph.put("1", list1);
 
@@ -194,10 +191,21 @@ public class MiniMumSpanningTreeFinder
 		//node 8
 		ArrayList<Tuple<String,Integer>> list8 = new ArrayList<Tuple<String,Integer>>();
 		list8.add(new Tuple<String,Integer>("2", 2));
-		list8.add(new Tuple<String,Integer>("7", 6));
+		list8.add(new Tuple<String,Integer>("7", 7));
 		list8.add(new Tuple<String,Integer>("6", 6));
-
 		graph.put("8", list8);
+		
+		Consumer<Entry<String, ArrayList<Tuple<String, Integer>>>> action = new Consumer<Entry<String, ArrayList<Tuple<String, Integer>>>> (){
+
+			public void accept(
+					Entry<String, ArrayList<Tuple<String, Integer>>> t) {
+					for (Tuple<String, Integer> edge: t.getValue())
+					{
+						System.out.printf("\n%s\t%s\t%d", t.getKey(), edge.x, edge.y);
+					}
+					System.out.print("\n---------------------\n");
+			}};
+		graph.entrySet().forEach(action );
 	}
 
 	
@@ -209,23 +217,23 @@ public class MiniMumSpanningTreeFinder
 		{
 			final String temp = nextVertex;
 			Integer minimum = INFINITY;
-			//if (null != graph.get(nextVertex))
-			//{
-				System.out.println("Next Vertex=" + nextVertex);
-				System.out.println("Graph Size= " + graph.size());
-				for  (Iterator <Tuple<String,Integer>> adjEdge = graph.get(nextVertex).iterator(); adjEdge.hasNext();)
+			
+			System.out.println("\nNext Vertex=" + nextVertex);
+			//System.out.println("Graph Size= " + graph.size());
+			for  (Iterator <Tuple<String,Integer>> adjEdge = graph.get(nextVertex).iterator(); adjEdge.hasNext();)
+			{
+				Tuple<String, Integer> t = adjEdge.next();
+				//System.out.printf("X:%s\tY:%d\n", t.x, t.y);
+				if (t.y < minimum)
 				{
-					Tuple<String, Integer> t = adjEdge.next();
-					//System.out.printf("X:%s\tY:%d\n", t.x, t.y);
-					if (t.y < minimum)
-					{
-						minimum = t.y;
-						nextVertex = t.x;
-						System.out.println("Next Vertex updated to:" + nextVertex);
-					}
+					minimum = t.y;
+					nextVertex = t.x;
+					System.out.println("Next Vertex updated to:" + nextVertex);
+					System.out.println("Edge cost added to MST:" + minimum);
 				}
-				mstCost += minimum;
-			//}	
+			}
+			mstCost += minimum;
+
 			graphKey++;
 			final String newKey = graphKey.toString();
 			final String temp2 = nextVertex;
@@ -233,7 +241,9 @@ public class MiniMumSpanningTreeFinder
 			Predicate<Tuple<String, Integer>> filter = new Predicate <Tuple<String, Integer>> (){
 
 				public boolean test(Tuple<String, Integer> t) {
-					return t.x == temp || t.x == temp2 || t.x == newKey;
+					//System.out.println ("\nWill remove " + t.x + "?" + ( t.x.equalsIgnoreCase(temp) || t.x == temp2 || t.x == newKey));
+					//System.out.printf("\n%s\t%s\t%s", temp, temp2, newKey);
+					return t.x.equalsIgnoreCase(temp) || t.x.equalsIgnoreCase(temp2) || t.x.equalsIgnoreCase(newKey);
 				}
 			};
 
@@ -244,7 +254,6 @@ public class MiniMumSpanningTreeFinder
 			ArrayList <Tuple<String, Integer>> a = graph.get(nextVertex);
 			//System.out.print(a.size());
 			a.addAll(graph.get(temp));
-			//((ArrayList<Tuple<String,Integer>>) graph.get(nextVertex)).addAll((ArrayList<Tuple<String,Integer>>) graph.get(temp));
 			//merge step of two nodes
 			graph.put(newKey,  a);
 			graph.get(newKey).removeIf(filter);
@@ -267,9 +276,18 @@ public class MiniMumSpanningTreeFinder
 					((ArrayList<Tuple<String,Integer>>)graph.get(s.x)).replaceAll(operator);
 				}
 			}
-			
-		
 			nextVertex = newKey;
+			/*Consumer<Entry<String, ArrayList<Tuple<String, Integer>>>> action = new Consumer<Entry<String, ArrayList<Tuple<String, Integer>>>> (){
+
+				public void accept(
+						Entry<String, ArrayList<Tuple<String, Integer>>> t) {
+						for (Tuple<String, Integer> edge: t.getValue())
+						{
+							System.out.printf("\n%s\t%s\t%d", t.getKey(), edge.x, edge.y);
+						}
+						System.out.print("\n---------------------\n");
+				}};
+			graph.entrySet().forEach(action );*/
 		}
 	}
 }
