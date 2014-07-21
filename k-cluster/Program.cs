@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,11 +15,31 @@ namespace k_cluster
         static int nodeCount;
         static void Main(string[] args)
         {
-            LoadGraph();
-            Console.WriteLine("Max spacing=" + GetMaxSpacing(4));
+           /* LoadGraph();
+            Console.WriteLine("Max spacing=" + GetMaxSpacing(4));*/
+            Console.WriteLine("Cluster count =" + ComputeMaxClustersWithHummingDistance());
             Console.ReadKey();
         }
 
+        private static int ComputeMaxClustersWithHummingDistance()
+        {
+            StreamReader graphFile = new StreamReader(@"C:\Users\khyati\Documents\GitHub\Coursera\k-cluster\cluster_big_test.txt");
+            UnionFindBig uf = new UnionFindBig(int.Parse(graphFile.ReadLine().Trim().Split(' ')[1]));
+            var t1 = from line in graphFile.Lines()
+                     let items = line.Trim().Split(' ')
+                     where items.Length > 3
+                     select items.ConvertToInt() ;
+
+            foreach (var a in t1)
+            {
+                if (uf.Find(a) == int.MinValue)
+                {
+                    uf.Insert(a);
+                }
+            }
+
+            return uf.ClusterCount();
+        }
         private static void LoadGraph  ()
         {
             //test file op=134365
@@ -80,6 +101,23 @@ namespace k_cluster
             {
                 yield return line;
             }
+        }
+    }
+    public static class BitStringsToIntConverter
+    {
+        public static int ConvertToInt (this string[] bitsString)
+        {
+            bool[] bits = new bool[bitsString.Length];
+            for (short i = 0; i < bitsString.Length; i++ )
+            {
+                bits[i] = bitsString[i].Equals("1") ? true : false;
+            }
+            BitArray bitArray = new BitArray(bits);
+           // byte [] bytes = new byte[bitsString.Length % 8 != 0 ? bitsString.Length/8 + 1 : bitsString.Length / 8];
+            byte[] bytes = new byte[4];
+            bitArray.CopyTo(bytes, 0);
+            int result = BitConverter.ToInt32(bytes, 0);
+            return result;
         }
     }
 }
