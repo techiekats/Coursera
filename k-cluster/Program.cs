@@ -23,12 +23,12 @@ namespace k_cluster
 
         private static int ComputeMaxClustersWithHummingDistance()
         {
-            StreamReader graphFile = new StreamReader(@"C:\Users\khyati\Documents\GitHub\Coursera\k-cluster\cluster_big_test.txt");
+            StreamReader graphFile = new StreamReader(@"C:\Users\khyati\Documents\GitHub\Coursera\k-cluster\clustering_big.txt");
             UnionFindBig uf = new UnionFindBig(int.Parse(graphFile.ReadLine().Trim().Split(' ')[1]));
             var t1 = from line in graphFile.Lines()
                      let items = line.Trim().Split(' ')
                      where items.Length > 3
-                     select items.ConvertToInt() ;
+                     select items.ConvertToLong();
 
             foreach (var a in t1)
             {
@@ -105,7 +105,7 @@ namespace k_cluster
     }
     public static class BitStringsToIntConverter
     {
-        public static int ConvertToInt (this string[] bitsString)
+        public static long ConvertToLong (this string[] bitsString)
         {
             bool[] bits = new bool[bitsString.Length];
             for (short i = 0; i < bitsString.Length; i++ )
@@ -114,9 +114,9 @@ namespace k_cluster
             }
             BitArray bitArray = new BitArray(bits);
            // byte [] bytes = new byte[bitsString.Length % 8 != 0 ? bitsString.Length/8 + 1 : bitsString.Length / 8];
-            byte[] bytes = new byte[4];
+            byte[] bytes = new byte[sizeof(long)];
             bitArray.CopyTo(bytes, 0);
-            int result = BitConverter.ToInt32(bytes, 0);
+            long result = BitConverter.ToInt64(bytes, 0);
             return result;
         }
     }
