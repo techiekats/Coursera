@@ -32,39 +32,6 @@ namespace KnapSack
             return soln;
         }
 
-        private int Solve(int index, int size)
-        {
-            int take, dontTake;
-            take = dontTake = 0;
-            matrix[index] = new int[weightLimit + 1];
-            if (matrix[index][size] != 0)
-            {
-                return matrix[index][size];
-            }
-
-            if (index == 0)
-            {
-                if (itemWeights[0] <= size)
-                {
-                    matrix[index][size] = itemValues[0];
-                    return itemValues[0];
-                }
-                else
-                {
-                    matrix[index][size] = 0;
-                    return 0;
-                }
-            }
-            if (itemWeights[index] <= size)
-                take = itemWeights[index] + Solve(index - 1, size - itemWeights[index]);
-
-            dontTake = Solve(index - 1, size);
-
-            matrix[index][size] = Math.Max(take, dontTake);
-
-            return matrix[index][size];
-        }
-
         private int KS()
         {
             for (int i = 0; i < numberOfItems; i++)

@@ -10,12 +10,15 @@ namespace KnapSack
     class Program
     {
         static Knapsack knapsack;
+        static KnapSackBig knapsackBig;
         //static List<Tuple<int, int>> knapsackInstance;
         static void Main(string[] args)
         {
-            LoadKnapSackInstance();
+            //LoadKnapSackInstance();
             //LoadKnapSackTestInstance();
-            Console.WriteLine (knapsack.SolveKnapSack());
+            //Console.WriteLine (knapsack.SolveKnapSack());
+            LoadKnapSackBigTestInstance();
+            Console.WriteLine(knapsackBig.KS());
             Console.ReadKey();
         }
         private static void LoadKnapSackInstance()
@@ -60,6 +63,28 @@ namespace KnapSack
             vals.RemoveAt(0);
             wts.RemoveAt(0);
             knapsack = new Knapsack(vals.ToArray(), wts.ToArray(), constraint, size);
+        }
+
+        private static void LoadKnapSackBigTestInstance ()
+        {
+            //test file op=134365
+            StreamReader graphFile = new StreamReader(@"C:\Users\khyati\Documents\GitHub\Coursera\KnapSack\knapsack1.txt");
+            var t1 = from line in graphFile.Lines()
+                     let items = line.Split(' ')
+                     select new { Value = uint.Parse(items[0]), Weight = uint.Parse(items[1]) };
+
+            List<uint> vals = new List<uint>();
+            List<uint> wts = new List<uint>();
+            foreach (var t in t1)
+            {
+                vals.Add(t.Value);
+                wts.Add(t.Weight);
+            }
+            uint knapsackSize = vals[0];
+            uint numAvailableItems = wts[0];
+            vals.RemoveAt(0);
+            wts.RemoveAt(0);
+            knapsackBig = new KnapSackBig(numAvailableItems, knapsackSize, vals.ToArray<uint>(), wts.ToArray<uint>());
         }
 
     }
