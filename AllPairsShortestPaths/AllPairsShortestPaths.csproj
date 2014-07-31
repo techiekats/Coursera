@@ -48,6 +48,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="g1.txt" />
+    <Content Include="g2.txt" />
+    <Content Include="g3.txt" />
     <Content Include="problemstmt.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
