@@ -9,7 +9,6 @@ namespace AllPairsShortestPaths
     class Program
     {
         private static string SOURCE = "0";
-        private static int EDGE_COUNT;
         private static Dictionary<string, int> computedDistances;
         private static Dictionary<string, List<Tuple<string, int>>> graph;
         private static Dictionary<string, List<Tuple<string, int>>> incidentEdgesGraph;
@@ -17,13 +16,21 @@ namespace AllPairsShortestPaths
         static void Main(string[] args)
         {
             // LoadGraphFromTestData2();
-            LoadDirectedTestGraph();
-            //ComputeDijkstraShortestPath();      
-            ComputeBellmanForShortestPaths();
-            Console.WriteLine("Vertex\t\tDistance From Source");
-            for (var gEnum = computedDistances.GetEnumerator(); gEnum.MoveNext(); )
+            //LoadDirectedTestGraph();
+            //ComputeDijkstraShortestPath();     
+            LoadDirectedTestGraphWithNegativeCycle();
+            bool graphContainsNegativeCycles =  ComputeBellmanForShortestPaths();
+            if (!graphContainsNegativeCycles)
             {
-                Console.WriteLine(string.Format("{0}\t\t\t{1}", gEnum.Current.Key, gEnum.Current.Value));
+                Console.WriteLine("Vertex\t\tDistance From Source");
+                for (var gEnum = computedDistances.GetEnumerator(); gEnum.MoveNext(); )
+                {
+                    Console.WriteLine(string.Format("{0}\t\t\t{1}", gEnum.Current.Key, gEnum.Current.Value));
+                }
+            }         
+            else
+            {
+                Console.WriteLine("Graph has negative cycle(s)");
             }
             Console.ReadKey();
         }
@@ -57,7 +64,6 @@ namespace AllPairsShortestPaths
 
             //node 4
             graph.Add("4", new List<Tuple<string, int>>());
-            EDGE_COUNT = 6;
 
             incidentEdgesGraph = new Dictionary<string, List<Tuple<string, int>>>();
             incidentEdgesGraph.Add("0", new List<Tuple<string, int>>());
@@ -77,6 +83,57 @@ namespace AllPairsShortestPaths
             List<Tuple<string, int>> _list4 = new List<Tuple<string, int>>();
             _list4.Add(new Tuple<string, int>("2", 4));
             _list4.Add(new Tuple<string, int>("3", 2));
+            incidentEdgesGraph.Add("4", _list4);
+
+
+
+        }
+        private static void LoadDirectedTestGraphWithNegativeCycle()
+        {
+            graph = new Dictionary<string, List<Tuple<string, int>>>();
+
+            //node 0
+            List<Tuple<string, int>> list0 = new List<Tuple<string, int>>();
+            list0.Add(new Tuple<String, int>("1", 4));
+            graph.Add("0", list0);
+
+            //node 1
+            List<Tuple<string, int>> list1 = new List<Tuple<string, int>>();
+            list1.Add(new Tuple<String, int>("3", -1));
+            graph.Add("1", list1);
+
+            //node 2
+            List<Tuple<string, int>> list2 = new List<Tuple<string, int>>();
+            list2.Add(new Tuple<String, int>("1", -3));
+            graph.Add("2", list2);
+
+            //node 3
+            List<Tuple<string, int>> list3 = new List<Tuple<string, int>>();
+            list3.Add(new Tuple<String, int>("4", 2));
+            list3.Add(new Tuple<String, int>("2", -2));
+            graph.Add("3", list3);
+
+            //node 4
+            graph.Add("4", new List<Tuple<string, int>>());
+
+            incidentEdgesGraph = new Dictionary<string, List<Tuple<string, int>>>();
+            incidentEdgesGraph.Add("0", new List<Tuple<string, int>>());
+            List<Tuple<string, int>> _list1 = new List<Tuple<string, int>>();
+            _list1.Add(new Tuple<string, int>("0", 4));
+            _list1.Add(new Tuple<string, int>("2", -3));
+
+            incidentEdgesGraph.Add("1", _list1);
+
+            List<Tuple<string, int>> _list2 = new List<Tuple<string, int>>();
+            _list2.Add(new Tuple<string, int>("3", -2));
+            incidentEdgesGraph.Add("2", _list2);
+
+            List<Tuple<string, int>> _list3 = new List<Tuple<string, int>>();
+            _list3.Add(new Tuple<string, int>("1", -1));
+            incidentEdgesGraph.Add("3", _list3);
+
+            List<Tuple<string, int>> _list4 = new List<Tuple<string, int>>();
+            _list4.Add(new Tuple<string, int>("3", 4));
             incidentEdgesGraph.Add("4", _list4);
 
 
@@ -233,7 +290,7 @@ namespace AllPairsShortestPaths
                 graph.Remove(temp);
             }
         }
-        private static void ComputeBellmanForShortestPaths()
+        private static bool ComputeBellmanForShortestPaths()
         {
             int[][] matrix = new int [2][];
             matrix[0] = new int[graph.Count];
@@ -243,15 +300,12 @@ namespace AllPairsShortestPaths
                 matrix[1][index] = int.MaxValue;
             }
             matrix[1][0] = 0;//source vertex
-            /*
-            foreach (var edge in graph["0"])
+            
+            bool valueDecreasedInFinalIteration = true;
+            int i;
+            for (i = 0; i < graph.Count; i++)
             {
-                matrix[1][int.Parse(edge.Item1)] = edge.Item2;
-            }*/
-
-            bool valueDecreasedInFinalIteration = false;
-            for (int i = 0; i < graph.Count; i++)
-            {
+                valueDecreasedInFinalIteration = false;
                 Array.Copy(matrix[1], matrix[0], graph.Count);
                 for (int index = 0; index < graph.Count; index++)
                 {
@@ -269,17 +323,15 @@ namespace AllPairsShortestPaths
                         value2 = temp < value2 ? temp : value2;
                     }
                     matrix[1][v] = Math.Min(value1, value2);
+                    valueDecreasedInFinalIteration = valueDecreasedInFinalIteration  || (matrix[0][v] > matrix[1][v]);
                 }
             }
-            if (valueDecreasedInFinalIteration)
-            {
-                Console.WriteLine("Graph has negative edges");
-            }
             computedDistances = new Dictionary<string,int>();
-            for (int i=0; i < graph.Count(); i++)
+            for (int k=0; k < graph.Count(); k++)
             {
-                computedDistances.Add(i.ToString(), matrix[1][i]);
+                computedDistances.Add(k.ToString(), matrix[1][k]);
             }
+            return valueDecreasedInFinalIteration;
              
         }
     }
