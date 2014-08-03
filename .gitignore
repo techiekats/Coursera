@@ -67,3 +67,16 @@ k-cluster/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.
 k-clustering/bin/Debug/k-clustering.exe.config
 k-clustering/bin/Debug/k-clustering.vshost.exe.config
 k-cluster/obj/Debug/k-cluster.csproj.FileListAbsolute.txt
+AllPairsShortestPaths/bin/Debug/AllPairsShortestPaths.exe.config
+AllPairsShortestPaths/bin/Debug/AllPairsShortestPaths.vshost.exe.config
+AllPairsShortestPaths/bin/Debug/AllPairsShortestPaths.vshost.exe.manifest
+AllPairsShortestPaths/obj/Debug/AllPairsShortestPaths.csproj.FileListAbsolute.txt
+AllPairsShortestPaths/obj/Debug/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs
+AllPairsShortestPaths/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs
+KnapSack/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs
+KnapSack/obj/Debug/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs
+KnapSack/obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
+KnapSack/obj/Debug/KnapSack.csproj.FileListAbsolute.txt
+KnapSack/bin/Debug/KnapSack.vshost.exe.manifest
+KnapSack/bin/Debug/KnapSack.vshost.exe.config
+KnapSack/bin/Debug/KnapSack.exe.config
