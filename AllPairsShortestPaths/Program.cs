@@ -18,7 +18,9 @@ namespace AllPairsShortestPaths
             // LoadGraphFromTestData2();
             //LoadDirectedTestGraph();
             //ComputeDijkstraShortestPath();     
-            LoadDirectedTestGraphWithNegativeCycle();
+            //LoadDirectedTestGraphWithNegativeCycle();
+           // LoadDirectedTestGraphWithNegativeCycle2();
+            LoadDirectedTestGraphWithCycle();
             bool graphContainsNegativeCycles =  ComputeBellmanForShortestPaths();
             if (!graphContainsNegativeCycles)
             {
@@ -136,6 +138,124 @@ namespace AllPairsShortestPaths
             _list4.Add(new Tuple<string, int>("3", 4));
             incidentEdgesGraph.Add("4", _list4);
 
+
+
+        }
+        private static void LoadDirectedTestGraphWithNegativeCycle2()
+        {
+            graph = new Dictionary<string, List<Tuple<string, int>>>();
+
+            //node 0
+            List<Tuple<string, int>> list0 = new List<Tuple<string, int>>();
+            list0.Add(new Tuple<String, int>("1", 2));
+            list0.Add(new Tuple<String, int>("4", 3));
+            graph.Add("0", list0);
+
+            //node 1
+            List<Tuple<string, int>> list1 = new List<Tuple<string, int>>();
+            list1.Add(new Tuple<String, int>("3", -3));
+            list1.Add(new Tuple<String, int>("4", 4));
+            graph.Add("1", list1);
+
+            //node 2
+            List<Tuple<string, int>> list2 = new List<Tuple<string, int>>();
+            list2.Add(new Tuple<String, int>("1", -5));
+            list2.Add(new Tuple<String, int>("5", 5));
+            graph.Add("2", list2);
+
+            //node 3
+            List<Tuple<string, int>> list3 = new List<Tuple<string, int>>();
+            list3.Add(new Tuple<String, int>("2", -4));
+            graph.Add("3", list3);
+
+            //node 4
+            graph.Add("4", new List<Tuple<string, int>>());
+            graph.Add("5", new List<Tuple<string, int>>());
+
+
+            incidentEdgesGraph = new Dictionary<string, List<Tuple<string, int>>>();
+            incidentEdgesGraph.Add("0", new List<Tuple<string, int>>());
+            List<Tuple<string, int>> _list1 = new List<Tuple<string, int>>();
+            _list1.Add(new Tuple<string, int>("0", 2));
+            _list1.Add(new Tuple<string, int>("2", -5));
+
+            incidentEdgesGraph.Add("1", _list1);
+
+            List<Tuple<string, int>> _list2 = new List<Tuple<string, int>>();
+            _list2.Add(new Tuple<string, int>("3", -4));
+            incidentEdgesGraph.Add("2", _list2);
+
+            List<Tuple<string, int>> _list3 = new List<Tuple<string, int>>();
+            _list3.Add(new Tuple<string, int>("1", -3));
+            incidentEdgesGraph.Add("3", _list3);
+
+            List<Tuple<string, int>> _list4 = new List<Tuple<string, int>>();
+            _list4.Add(new Tuple<string, int>("0", 3));
+            _list4.Add(new Tuple<string, int>("1", 4));
+            incidentEdgesGraph.Add("4", _list4);
+
+            List<Tuple<string, int>> _list5 = new List<Tuple<string, int>>();
+            _list5.Add(new Tuple<string, int>("2", 5));
+            incidentEdgesGraph.Add("5", _list5);
+
+
+        }
+        private static void LoadDirectedTestGraphWithCycle()
+        {
+            graph = new Dictionary<string, List<Tuple<string, int>>>();
+
+            //node 0
+            List<Tuple<string, int>> list0 = new List<Tuple<string, int>>();
+            list0.Add(new Tuple<String, int>("1", 2));
+            list0.Add(new Tuple<String, int>("4", 3));
+            graph.Add("0", list0);
+
+            //node 1
+            List<Tuple<string, int>> list1 = new List<Tuple<string, int>>();
+            list1.Add(new Tuple<String, int>("3", -3));
+            list1.Add(new Tuple<String, int>("4", 4));
+            graph.Add("1", list1);
+
+            //node 2
+            List<Tuple<string, int>> list2 = new List<Tuple<string, int>>();
+            list2.Add(new Tuple<String, int>("1", 8));
+            list2.Add(new Tuple<String, int>("5", 5));
+            graph.Add("2", list2);
+
+            //node 3
+            List<Tuple<string, int>> list3 = new List<Tuple<string, int>>();
+            list3.Add(new Tuple<String, int>("2", -4));
+            graph.Add("3", list3);
+
+            //node 4
+            graph.Add("4", new List<Tuple<string, int>>());
+            graph.Add("5", new List<Tuple<string, int>>());
+
+
+            incidentEdgesGraph = new Dictionary<string, List<Tuple<string, int>>>();
+            incidentEdgesGraph.Add("0", new List<Tuple<string, int>>());
+            List<Tuple<string, int>> _list1 = new List<Tuple<string, int>>();
+            _list1.Add(new Tuple<string, int>("0", 2));
+            _list1.Add(new Tuple<string, int>("2", 8));
+
+            incidentEdgesGraph.Add("1", _list1);
+
+            List<Tuple<string, int>> _list2 = new List<Tuple<string, int>>();
+            _list2.Add(new Tuple<string, int>("3", -4));
+            incidentEdgesGraph.Add("2", _list2);
+
+            List<Tuple<string, int>> _list3 = new List<Tuple<string, int>>();
+            _list3.Add(new Tuple<string, int>("1", -3));
+            incidentEdgesGraph.Add("3", _list3);
+
+            List<Tuple<string, int>> _list4 = new List<Tuple<string, int>>();
+            _list4.Add(new Tuple<string, int>("0", 3));
+            _list4.Add(new Tuple<string, int>("1", 4));
+            incidentEdgesGraph.Add("4", _list4);
+
+            List<Tuple<string, int>> _list5 = new List<Tuple<string, int>>();
+            _list5.Add(new Tuple<string, int>("2", 5));
+            incidentEdgesGraph.Add("5", _list5);
 
 
         }
