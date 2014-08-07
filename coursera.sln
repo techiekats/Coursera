@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnapSack", "KnapSack\KnapSa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllPairsShortestPaths", "AllPairsShortestPaths\AllPairsShortestPaths.csproj", "{F8B35F4C-54EE-4893-886B-E128B7D5A9E1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravellingSalesPerson", "TravellingSalesPerson\TravellingSalesPerson.csproj", "{9F591445-AAF9-4604-A4BB-4F49B2176919}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F8B35F4C-54EE-4893-886B-E128B7D5A9E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8B35F4C-54EE-4893-886B-E128B7D5A9E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8B35F4C-54EE-4893-886B-E128B7D5A9E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F591445-AAF9-4604-A4BB-4F49B2176919}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F591445-AAF9-4604-A4BB-4F49B2176919}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F591445-AAF9-4604-A4BB-4F49B2176919}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F591445-AAF9-4604-A4BB-4F49B2176919}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

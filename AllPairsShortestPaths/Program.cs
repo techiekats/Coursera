@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,15 +20,17 @@ namespace AllPairsShortestPaths
             //LoadDirectedTestGraphWithNegativeCycle();
            // LoadDirectedTestGraphWithNegativeCycle2();
            //LoadDirectedTestGraphWithCycle();
-            LoadDirectedTestGraphForJohnsons();
+           //LoadDirectedTestGraphForJohnsons();
+            LoadGraphFromFile();
             var result = ComputeShortestPathDistance();
             if (!result.Item1)
             {
-                Console.WriteLine("Vertex\t\tDistance From Source");
+               /* Console.WriteLine("Vertex\t\tDistance From Source");
                 for (var gEnum = computedDistances.GetEnumerator(); gEnum.MoveNext(); )
                 {
                     Console.WriteLine(string.Format("{0}\t\t\t{1}", gEnum.Current.Key, gEnum.Current.Value));
-                }
+                }*/
+                Console.WriteLine("SP = " + result.Item2);
             }         
             else
             {
@@ -39,6 +42,8 @@ namespace AllPairsShortestPaths
         #region ALGORITHMS
         private static Tuple<bool,int> ComputeShortestPathDistance ()
         {
+            Dictionary<string, int> retainedTransforms;
+
             for (var item = incidentEdgesGraph.Values.GetEnumerator(); item.MoveNext(); )
             {
                 item.Current.Add(new Tuple<string, int>("0", 0));
@@ -46,8 +51,11 @@ namespace AllPairsShortestPaths
             incidentEdgesGraph.Add("0", new List<Tuple<string, int>>());
             List<Tuple<string, int>> temp = graph.Keys.Select(k=> new Tuple<string, int>(k, 0)).ToList();
             graph.Add("0", new List<Tuple<string, int>>(temp));
+            Console.WriteLine("Invoking Bellman ford with dummy node");
             bool containsNegativeCycles = ComputeBellmanForShortestPaths();
-            int shortestDistance = int.MaxValue;
+            //store the edges original weights
+            retainedTransforms = new Dictionary<string,int>(computedDistances);
+            int shortestDistance = INFINITY;
 
             if (containsNegativeCycles)
             {
@@ -58,7 +66,7 @@ namespace AllPairsShortestPaths
                 //remove the extra nodes and garbage collection
                 incidentEdgesGraph = null;
                 graph.Remove("0");
-                
+                Console.WriteLine("Recomputing weights");
                 //recompute edge weights
                 List<string> keySetClone = graph.Keys.ToList();
                 for (var g = keySetClone.GetEnumerator(); g.MoveNext(); )
@@ -67,7 +75,17 @@ namespace AllPairsShortestPaths
                 }
                 for (var g = keySetClone.GetEnumerator(); g.MoveNext();)
                 {
+                    Console.WriteLine("Invoking Dijkstra for node: " + g.Current);
                     ComputeDijkstraShortestPath(g.Current);
+                    //update computed distances
+                    var computedDistancesKeySet = computedDistances.Keys.ToList();
+                    foreach (var k in computedDistancesKeySet)
+                    {
+                        if (graph[g.Current].Where(s => s.Item1.Equals(k)).Count() != 0)
+                        {
+                            computedDistances[k] = graph[g.Current].First(s => s.Item1.Equals(k)).Item2 - retainedTransforms[g.Current] + retainedTransforms[k];
+                        }
+                    }
                     shortestDistance = shortestDistance > computedDistances.Min(d => d.Value)? computedDistances.Min(d => d.Value) : shortestDistance;
                     Console.WriteLine("New shortest distance=" + shortestDistance + " for node =" + g.Current);
                 }
@@ -79,6 +97,7 @@ namespace AllPairsShortestPaths
             String nextVertex = source;
             Dictionary<string, Tuple<bool, bool>> computationStatus = new Dictionary<string,Tuple<bool,bool>>();
             var clone = new Dictionary<string, List<Tuple<string, int>>>(graph) ;
+
             //construct initial set and compute distances
             computedDistances = new Dictionary<string, int>();
 
@@ -142,7 +161,7 @@ namespace AllPairsShortestPaths
             matrix[1] = new int[graph.Count];
             for (int index = 0; index < graph.Count; index ++ )
             {
-                matrix[1][index] = int.MaxValue;
+                matrix[1][index] = INFINITY;
             }
             matrix[1][0] = 0;//source vertex
             
@@ -154,16 +173,16 @@ namespace AllPairsShortestPaths
                 Array.Copy(matrix[1], matrix[0], graph.Count);
                 for (int index = 0; index < graph.Count; index++)
                 {
-                    matrix[1][index] = int.MaxValue;
+                    matrix[1][index] = INFINITY;
                 }
                 for (int v = 0; v < graph.Count;  v++)
                 {
                     int value1 =  matrix[0][v];
 
-                    int value2 = int.MaxValue;
+                    int value2 = INFINITY;
                     foreach ( var edge in incidentEdgesGraph[v.ToString()])
                     {
-                        int temp = matrix[0][int.Parse(edge.Item1)] == int.MaxValue ? int.MaxValue //to avoid overflow
+                        int temp = matrix[0][int.Parse(edge.Item1)] == INFINITY ? INFINITY //to avoid overflow
                             :matrix[0][int.Parse(edge.Item1)] + edge.Item2;
                         value2 = temp < value2 ? temp : value2;
                     }
@@ -181,8 +200,7 @@ namespace AllPairsShortestPaths
         }
         #endregion
 
-
-        #region UNIT TESTING METHODS
+        #region UNIT TESTING METHODS AND DATA LOADING
         private static void LoadDirectedTestGraph()
         {
             graph = new Dictionary<string, List<Tuple<string, int>>>();
@@ -463,9 +481,7 @@ namespace AllPairsShortestPaths
             incidentEdgesGraph.Add("5", _list5);
 
             incidentEdgesGraph.Add("6", new List<Tuple<string, int>>());
-        }
-        
-        
+        }    
         /*EXPECTED OUTPUT:
        * Vertex   Distance from Source
           0                0
@@ -554,6 +570,48 @@ namespace AllPairsShortestPaths
 
             graph.Add("8", list8);
         }
+        private static void LoadGraphFromFile()
+        {
+            //test file op=134365
+            StreamReader graphFile = new StreamReader(@"C:\Users\khyati\Documents\GitHub\Coursera\AllPairsShortestPaths\gtest.txt");
+            var t1 = from line in graphFile.Lines()
+                     let items = line.Split(' ')
+                     where items.Length == 3
+                     select new { Tail = items[0], Head = items[1], Weight = int.Parse(items[2]) };
+
+            graph = new Dictionary<string, List<Tuple<string, int>>>();
+            incidentEdgesGraph = new Dictionary<string, List<Tuple<string, int>>>();
+            foreach (var t in t1)
+            {
+                if (!graph.ContainsKey(t.Tail))
+                {
+                    graph.Add(t.Tail, new List<Tuple<string, int>>());
+                }
+                graph[t.Tail].Add(new Tuple<string, int>(t.Head, t.Weight));
+                if (!incidentEdgesGraph.ContainsKey(t.Head))
+                {
+                    incidentEdgesGraph.Add(t.Head, new List<Tuple<string, int>>());
+                }
+                incidentEdgesGraph[t.Head].Add(new Tuple<string, int>(t.Tail, t.Weight));
+            }
+            Console.WriteLine("Loaded graph");
+        }
+
         #endregion
     }
+    public static class StreamReaderSequence
+    {
+        public static IEnumerable<string> Lines(this StreamReader source)
+        {
+            String line;
+
+            if (source == null)
+                throw new ArgumentNullException("source");
+            while ((line = source.ReadLine()) != null)
+            {
+                yield return line;
+            }
+        }
+    }
+
 }
