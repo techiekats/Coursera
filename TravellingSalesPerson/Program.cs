@@ -11,7 +11,7 @@ namespace TravellingSalesPerson
         private const double INFINITY = double.MaxValue;
         private static List<Tuple<double, double>> travelCoOrdinates;// = new List<Tuple<double, double>>();
         private static HashSet<int[]> sets;
-        private static Dictionary<string, double> subsetVsNodeCost;
+        private static Dictionary<Tuple<string, string>, double> subsetVsNodeCost;
         private static Dictionary<Tuple<string, string>, double> nonEuclideanDistanceSpecification;
         private static bool isDistanceNonEuclidean = false;
         static void Main(string[] args)
@@ -37,10 +37,10 @@ namespace TravellingSalesPerson
 
         private static double ComputeTravellingSalesManTourCost (int from=0)
         {
-           subsetVsNodeCost = new Dictionary<string, double>();
+           subsetVsNodeCost = new Dictionary<Tuple<string,string>, double>();
             foreach (var s in sets.Where(s=> s.Count() == 1))
             {
-                subsetVsNodeCost.Add(GetCommaSeparatedString(s), s[0]==from ? 0 : INFINITY);
+                subsetVsNodeCost.Add(new Tuple<string, string>(GetCommaSeparatedString(s), s[0].ToString()), s[0]==from ? 0 : INFINITY);
             }
             for (int m = 2; m <= travelCoOrdinates.Count; m++)
             {
@@ -50,18 +50,20 @@ namespace TravellingSalesPerson
                     {
                         if (destination != from)
                         {
-                            string key = GetCommaSeparatedString(s);
-                            if (!subsetVsNodeCost.ContainsKey(key))
-                            {
-                                subsetVsNodeCost.Add(key, INFINITY);
-                            }
+                            var key = new Tuple<string, string> (GetCommaSeparatedString(s), destination.ToString());
+                            subsetVsNodeCost.Add(key, INFINITY);
+                            
                             double minimum = INFINITY;
                             foreach (var k in s)
                             {
                                 if (k!= destination)
                                 {
-                                    var reducedSubSet = s.Where(p => p != destination).ToArray();
-                                    var cost = subsetVsNodeCost[GetCommaSeparatedString(reducedSubSet)] + GetDistance(travelCoOrdinates[k], travelCoOrdinates[destination]);
+                                    var reducedSubSetKey = new Tuple<string, string>(GetCommaSeparatedString(s.Where(p => p != destination).ToArray()), k.ToString());
+                                    if (!subsetVsNodeCost.ContainsKey(reducedSubSetKey))
+                                    {
+                                        subsetVsNodeCost.Add(reducedSubSetKey, INFINITY);
+                                    }
+                                    var cost = subsetVsNodeCost[reducedSubSetKey] + GetDistance(travelCoOrdinates[k], travelCoOrdinates[destination]);
                                     if (cost < minimum)
                                     {
                                         subsetVsNodeCost[key] = minimum = cost;
@@ -83,7 +85,7 @@ namespace TravellingSalesPerson
             {
                 if (nodeIndex != from)
                 {
-                    var reducedCostKey = GetCommaSeparatedString(subset);
+                    var reducedCostKey = new Tuple<string, string>(GetCommaSeparatedString(subset), nodeIndex.ToString());
                     //reducedCostKey = GetCommaSeparatedString(subset.Where (p=> p!= nodeIndex).ToArray());
                     var cost = subsetVsNodeCost[reducedCostKey] + GetDistance(travelCoOrdinates[nodeIndex], travelCoOrdinates[from]);
                     if (tourCost > cost)
