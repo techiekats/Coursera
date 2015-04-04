@@ -15,9 +15,9 @@ namespace k_cluster
         static int nodeCount;
         static void Main(string[] args)
         {
-           /* LoadGraph();
-            Console.WriteLine("Max spacing=" + GetMaxSpacing(4));*/
-            Console.WriteLine("Cluster count =" + ComputeMaxClustersWithHummingDistance());
+            LoadGraph();
+            Console.WriteLine("Max spacing=" + GetMaxSpacing(4));
+            //Console.WriteLine("Max Spacing =" + GetMaxSpacing(4));
             Console.ReadKey();
         }
 
@@ -43,7 +43,7 @@ namespace k_cluster
         private static void LoadGraph  ()
         {
             //test file op=134365
-            StreamReader graphFile = new StreamReader(@"C:\Users\khyati\documents\github\coursera\k-cluster\clusters.txt");
+            StreamReader graphFile = new StreamReader(@"C:\Users\khyati\documents\github\coursera\k-cluster\clusters-test2.txt");
             var t1 = from line in graphFile.Lines()
                      let items = line.Split(' ')
                      //where items.Length > 1
@@ -68,10 +68,16 @@ namespace k_cluster
                 /*uf.PrintClusters();
                 Console.WriteLine("--------------------");
                 Console.ReadKey();*/
-                if (uf.AreConnected(g.Item2, g.Item3))
+                if (!uf.AreConnected(g.Item2, g.Item3))
                 {
-                    //Console.WriteLine(string.Format("{0} {1} are connected. Cluster size = {2}", g.Item2, g.Item3, uf.ClusterCount()));
-                    continue;
+                    if (uf.ClusterCount() == clusterSize)
+                    {
+                        return g.Item1;
+                    }
+                    else
+                    {
+                        uf.Union(g.Item2, g.Item3);
+                    }
                 }
                 else
                 {

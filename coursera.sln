@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllPairsShortestPaths", "Al
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravellingSalesPerson", "TravellingSalesPerson\TravellingSalesPerson.csproj", "{9F591445-AAF9-4604-A4BB-4F49B2176919}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Max-Space-k-Clustering", "Max-Space-k-Clustering\Max-Space-k-Clustering.csproj", "{47AFDA8E-F793-4EBE-B1BA-26A0DB986C4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{9F591445-AAF9-4604-A4BB-4F49B2176919}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F591445-AAF9-4604-A4BB-4F49B2176919}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F591445-AAF9-4604-A4BB-4F49B2176919}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47AFDA8E-F793-4EBE-B1BA-26A0DB986C4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47AFDA8E-F793-4EBE-B1BA-26A0DB986C4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47AFDA8E-F793-4EBE-B1BA-26A0DB986C4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47AFDA8E-F793-4EBE-B1BA-26A0DB986C4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
