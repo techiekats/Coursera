@@ -51,7 +51,7 @@ namespace Max_Space_k_Clustering
             UF = new List<Tuple<int, int>>(n+1); //because the edge numbers are not zero based
             for (int i = 0; i <= n; i++)
             {
-                UF.Add (new Tuple<int, int>(0, i));
+                UF.Add (new Tuple<int, int>(0, i)); //rank , parent
             }
         }
         private static void LoadGraphAndSortByEdgeWeight(string filePath)
