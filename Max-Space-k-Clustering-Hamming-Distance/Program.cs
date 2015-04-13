@@ -10,17 +10,35 @@ namespace Max_Space_k_Clustering_Hamming_Distance
 {
     class Program
     {
-        private static Dictionary<uint, uint> G;
+        private static Dictionary<uint, Tuple<uint, uint>> G;
         private static uint k = UInt32.MinValue;
         private static int n = Int32.MinValue;
+        private static int clusterCount;
         private static List<List<uint>> preGeneratedXORsequences;
         static void Main(string[] args)
         {
+            /*//UTC 1
+            LoadNodes("clustering_test_1.txt");
+            k = 1; //Correct output = 4*/
+
+            /*//UTC 2
+            LoadNodes("clustering_test_2.txt");
+            k = 1; //Correct output = 1*/
+            /*//UTC 3
+            LoadNodes("clustering_test_3.txt");
+            k = 2;//Correct output = 3*/
+            /*//UTC 4
+            LoadNodes("clustering_test_4.txt");
+            k = 2;//Correct output = 11*/
+            /*//UTC 5
+            LoadNodes("clustering_test_5.txt");
+            k = 2;//Correct output = 989*/
+            //FINAL RUN
             LoadNodes("clustering_big.txt");
-            k = 3;
+            k = 2;//OUTPUT=6118 !!!!*/
             ComputeXORSequences();
             FindClusters();
-           // Console.WriteLine("Cluster count = " + UF.Values.Distinct().Count());
+            Console.WriteLine("Cluster count = " + clusterCount);
             Console.ReadKey();
         }
 
@@ -29,35 +47,90 @@ namespace Max_Space_k_Clustering_Hamming_Distance
         private static void FindClusters()
         {
             int n = G.Count;
-            var graphNodesEnumerator = G.Keys.GetEnumerator();
+            List<uint> nodes = G.Keys.ToList();
             for (int distance = 1; distance <= k; distance++)
             {
+                var graphNodesEnumerator = nodes.GetEnumerator();
                 while (graphNodesEnumerator.MoveNext())
                 {
                     MarkCloseNeighbours(graphNodesEnumerator.Current, distance);
                 }
             }
+
+            //simply maintain a list of parent pointers and in the end identify distinct parents
+            //nodes that have not participated at all are single point clusters and hence will be counted in the calculation
         }
         private static void MarkCloseNeighbours (uint inputNode, int hammingDistance)
         {
-            foreach (int i in preGeneratedXORsequences[hammingDistance - 1])
+            foreach (uint i in preGeneratedXORsequences[hammingDistance - 1])
             {
-                uint prospectiveNeighborValue = preGeneratedXORsequences[hammingDistance - 1][i] ^ inputNode;
+                uint prospectiveNeighborValue = i ^ inputNode;
                 if (G.ContainsKey (prospectiveNeighborValue))
                 {
-                    G[prospectiveNeighborValue] = inputNode;
+                    if (Find(prospectiveNeighborValue) != Find(inputNode))
+                    {
+                        Union(prospectiveNeighborValue, inputNode);
+                        clusterCount--;
+                    }
                 }
             }
         }
         #endregion
+
+        #region Union Find members
+        private static uint Find(uint vertex)
+        {
+            uint parent = G[vertex].Item1;
+            uint currentNode = vertex;
+            while (currentNode != parent) //hence root node because self parent
+            {
+                currentNode = parent;
+                parent = G[currentNode].Item1;
+            }
+            return parent;
+        }
+        private static uint Union(uint v1, uint v2)
+        {
+            uint root1 = Find(v1);
+            uint root2 = Find(v2);
+            uint rank1 = G[root1].Item2;
+            uint rank2 = G[root2].Item2;
+            uint newParent;
+            if (rank1 == rank2)
+            {
+                //update ranks at random, say root 1
+                G[root1] = new Tuple<uint, uint>(root1, ++rank1); //since a root node, hence is it's own parent
+                newParent = root1;
+            }
+            else
+            {
+                newParent = (rank1 > rank2) ? root1 : root2;
+            }
+
+            ApplyPathCompression(v1, newParent);
+            ApplyPathCompression(v2, newParent);
+            return newParent;
+        }
+        private static void ApplyPathCompression(uint vertex, uint parent)
+        {
+            uint currentNode = vertex;
+            while (currentNode != parent)
+            {
+                uint temp = G[currentNode].Item1;
+                G[currentNode] = new Tuple<uint, uint>(parent, G[currentNode].Item2);
+                currentNode = temp;
+            }
+        }
         
+        #endregion
+
         #region Initialization
         private static void LoadNodes(string filePath)
         {
             StreamReader graphFile = new StreamReader(filePath);
 
             var t1 = graphFile.Lines().GetEnumerator();
-            G = new Dictionary<uint, uint>();
+            G = new Dictionary<uint, Tuple<uint, uint>>();
             while (t1.MoveNext ())
             {
                if (k == UInt32.MinValue)
@@ -70,11 +143,11 @@ namespace Max_Space_k_Clustering_Hamming_Distance
                    n = t1.Current.Replace(" ", string.Empty).Length;
                     if (!G.ContainsKey (node))
                     {
-                        G.Add(node, node);//self - parent
+                        G.Add(node, new Tuple <uint, uint> (node,0));//self - parent, rank
                     }
                }
             }
-            //currentClusterCount = G.Count;
+            clusterCount = G.Count();
         }
 
         private static void ComputeXORSequences()
@@ -166,6 +239,5 @@ namespace Max_Space_k_Clustering_Hamming_Distance
             return result;
 
         }
-    }
-   
+    }  
 }
