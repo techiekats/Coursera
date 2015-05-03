@@ -17,7 +17,7 @@ namespace AllPairsShortestPaths
         private static int n, m; //#vertices, #edges
         static void Main(string[] args)
         {            
-            LoadGraphFromFile("gtest_negative_self_loop.txt");
+            LoadGraphFromFile("g2.txt");
             bool halt = DetectNegativeCycle();
             if (halt)
             {              

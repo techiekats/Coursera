@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Max-Space-k-Clustering", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Max-Space-k-Clustering-Hamming-Distance", "Max-Space-k-Clustering-Hamming-Distance\Max-Space-k-Clustering-Hamming-Distance.csproj", "{3865EFA2-5ED0-492A-BB9C-DE3EEB9E91EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphPointsPlotter", "GraphPointsPlotter\GraphPointsPlotter.csproj", "{156DF361-2854-4D0D-B0A6-4A1E39A47C6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{3865EFA2-5ED0-492A-BB9C-DE3EEB9E91EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3865EFA2-5ED0-492A-BB9C-DE3EEB9E91EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3865EFA2-5ED0-492A-BB9C-DE3EEB9E91EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{156DF361-2854-4D0D-B0A6-4A1E39A47C6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{156DF361-2854-4D0D-B0A6-4A1E39A47C6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{156DF361-2854-4D0D-B0A6-4A1E39A47C6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{156DF361-2854-4D0D-B0A6-4A1E39A47C6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
