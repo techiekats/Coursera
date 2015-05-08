@@ -15,9 +15,10 @@ namespace TravellingSalesPerson
         
         static void Main(string[] args)
         {
-            LoadGraph("test1.txt"); //Optimal cost 8.8
+            //LoadGraph("test1.txt"); //Optimal cost 8.8
             //LoadGraph("test2.txt"); //Optimal cost 7.63
-            //LoadGraph("test3.txt"); //optimal cost 4
+            //LoadGraph("test3.txt"); //Optimal cost 4
+            LoadGraph("test4.txt"); 
             //LoadGraph("tsp.txt");
             double minimumTourCost = ComputeMinimumCostOfSubgraph(0, Points.Count()-1);
             Console.WriteLine("TSP cost = " + minimumTourCost);
@@ -51,7 +52,8 @@ namespace TravellingSalesPerson
                 int subSetEnd = sets.FindLastIndex(t => t.Count() == j);
                 for (int index = subSetStart; index <= subSetEnd; index++)
                 {
-                    var candidateSubTours = sets.Where(t => t.Count() == j - 1 && t.Intersect(sets[index]).Count() != 0);
+                    var candidateSubTours = sets.Where(t => t.Count() == j - 1 && t.Intersect(sets[index]).Count() != 0
+                        && t.Except(sets[index]).Count() == 0);
                     double minCost = INFINITY;
                     foreach (var tour in candidateSubTours)
                     {
@@ -124,6 +126,22 @@ namespace TravellingSalesPerson
             return sets;
         }
        
+        private static double ComputeMinimumDistanceWithNearestNeighborHeuristic (int startIndex, int endIndex)
+        {
+            Tuple<double, double> source = Points[startIndex];
+            double[][] G = ComputeDistanceMatrix(startIndex, endIndex);
+            bool[] isTraversed = new bool [endIndex-startIndex + 1];
+            double tourCost = 0;
+
+            int nextIndex = startIndex;
+            while (isTraversed.Any (t=> !t))
+            {
+                double closestDistance = G[nextIndex].Min();
+                tourCost += closestDistance;
+               
+            }
+            return tourCost;
+        }
         #region HELPER METHODS
         private static void LoadGraph(string filePath) 
         {

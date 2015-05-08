@@ -28,7 +28,7 @@ namespace GraphPointsPlotter
                      select items.Length > 1 ? new { X = float.Parse(items[0]), Y = float.Parse(items[1])}
                         : new { X = float.MinValue, Y = float.MinValue};
             
-            int i = 0;
+            int i = 1;
             foreach (var p in t1)
             {
                 if (p.X != float.MinValue)
